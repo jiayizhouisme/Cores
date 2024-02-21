@@ -34,6 +34,7 @@ namespace Core.EntityFrameWork
         {
             this.SetConnectString(App.Configuration["ConnectionStrings:SqlConnection"]);
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var connStr = GetDatabaseConnectionString();
