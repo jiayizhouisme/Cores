@@ -1,5 +1,5 @@
-﻿using Furion;
-using Furion.DatabaseAccessor;
+﻿using Core.Auth;
+using Furion;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 
 namespace Core.EntityFrameWork
 {
-    public class MultiTenantDbContext : AppDbContext<MultiTenantDbContext, MultiTenantDbContextLocator>
+    public class MasterDbContext_SQL : DefaultDbContext<MasterDbContext_SQL>
     {
-        public MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options) : base(options)
+        public MasterDbContext_SQL(DbContextOptions<MasterDbContext_SQL> options, IHttpContextUser user) : base(options, user)
         {
+            this.SetConnectString(App.Configuration["ConnectionStrings:SqlConnection"]);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connStr = App.Configuration["ConnectionStrings:SqlConnection"];
+            var connStr = GetDatabaseConnectionString();
             optionsBuilder.UseSqlServer(connStr, options =>
             {
                 options.MigrationsAssembly(App.Configuration["ConnectionStrings:Migrations"]);
