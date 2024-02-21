@@ -15,7 +15,7 @@ namespace Core.EntityFrameWork
     public abstract class DefaultDbContext<T> : AppDbContext<T>, IMultiTenantOnDatabase where T : DbContext
     {
         protected readonly IHttpContextUser user;
-        private string defaultConnectString;
+        protected string defaultConnectString;
 
         public DefaultDbContext(DbContextOptions<T> options, IHttpContextUser user) : base(options)
         {
@@ -27,7 +27,7 @@ namespace Core.EntityFrameWork
             this.defaultConnectString = connectString;
         }
 
-        public string GetDatabaseConnectionString()
+        public virtual string GetDatabaseConnectionString()
         {
 
             if (user.TenantId != null)
