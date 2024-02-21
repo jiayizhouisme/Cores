@@ -29,12 +29,12 @@ namespace Core.Auth
         public string ClientIp => GetClientIp();
         public Permissions Permissions => GetPermissions();
         public string Agent => GetAgent();
-        public bool IsAuthenticated()
+        public virtual bool IsAuthenticated()
         {
             return _accessor.HttpContext.User.Identity.IsAuthenticated;
         }
 
-        public string GetToken()
+        public virtual string GetToken()
         {
             if (_accessor.HttpContext != null)
             {
@@ -56,7 +56,7 @@ namespace Core.Auth
             return null;
         }
 
-        public List<string> GetUserInfoFromToken(string ClaimType)
+        public virtual List<string> GetUserInfoFromToken(string ClaimType)
         {
             var jwtHandler = new JwtSecurityTokenHandler();
             if (!string.IsNullOrEmpty(GetToken()))
@@ -73,12 +73,12 @@ namespace Core.Auth
             }
         }
 
-        public IEnumerable<Claim> GetClaimsIdentity()
+        public virtual IEnumerable<Claim> GetClaimsIdentity()
         {
             return _accessor.HttpContext.User.Claims;
         }
 
-        public List<string> GetClaimValueByType(string ClaimType)
+        public virtual List<string> GetClaimValueByType(string ClaimType)
         {
             return (from item in GetClaimsIdentity()
                     where item.Type == ClaimType
@@ -86,7 +86,7 @@ namespace Core.Auth
 
         }
 
-        private string GetTenantId()
+        protected virtual string GetTenantId()
         {
             if (_accessor.HttpContext != null)
             {
@@ -95,7 +95,7 @@ namespace Core.Auth
             return null;
         }
 
-        private string GetRealTenantId()
+        protected virtual string GetRealTenantId()
         {
             if (_accessor.HttpContext != null)
             {
@@ -113,7 +113,7 @@ namespace Core.Auth
             return realip;
         }
 
-        private Permissions GetPermissions()
+        protected virtual Permissions GetPermissions()
         {
             var str = GetUserInfoFromToken("permissions").FirstOrDefault();
             if (!str.IsNullOrEmpty())

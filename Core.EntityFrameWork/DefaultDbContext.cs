@@ -34,7 +34,7 @@ namespace Core.EntityFrameWork
             {
                 try
                 {
-                    var t = base.Tenant;
+                    var t = this.Tenant;
                     return t.ConnectionString;
                 }
                 catch

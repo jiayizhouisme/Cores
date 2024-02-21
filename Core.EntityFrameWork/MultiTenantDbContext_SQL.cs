@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Core.EntityFrameWork
 {
-    public class MultiTenantDbContext : AppDbContext<MultiTenantDbContext, MultiTenantDbContextLocator>
+    public class MultiTenantDbContext_SQL : AppDbContext<MultiTenantDbContext_SQL, MultiTenantDbContextLocator>
     {
-        public MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options) : base(options)
+        public MultiTenantDbContext_SQL(DbContextOptions<MultiTenantDbContext_SQL> options) : base(options)
         {
         }
 
