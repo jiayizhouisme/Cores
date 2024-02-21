@@ -14,7 +14,7 @@ namespace Core.EntityFrameWork
 {
     public abstract class DefaultDbContext<T> : AppDbContext<T>, IMultiTenantOnDatabase where T : DbContext
     {
-        private readonly IHttpContextUser user;
+        protected readonly IHttpContextUser user;
         private string defaultConnectString;
 
         public DefaultDbContext(DbContextOptions<T> options, IHttpContextUser user) : base(options)
