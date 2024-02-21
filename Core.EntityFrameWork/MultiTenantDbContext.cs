@@ -20,7 +20,7 @@ namespace Core.EntityFrameWork
             var connStr = App.Configuration["ConnectionStrings:SqlConnection"];
             optionsBuilder.UseSqlServer(connStr, options =>
             {
-                options.MigrationsAssembly("通用订票.Database.Migrations");
+                options.MigrationsAssembly(App.Configuration["ConnectionStrings:Migrations"]);
             });
             base.OnConfiguring(optionsBuilder);
         }
