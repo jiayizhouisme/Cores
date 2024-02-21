@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Core.User.Service
 {
-    public abstract class UserLoginService<T> : BaseService<T>, IUserLoginService<T> where T : UserBase, IPrivateEntity, new()
+    public abstract class UserLoginService<T,DbLocator> : BaseService<T, DbLocator>, IUserLoginService<T> where T : UserBase, IPrivateEntity, new() where DbLocator : class,IDbContextLocator
     {
-        public UserLoginService(IRepository<T> repository)
+        public UserLoginService(IRepository<T, DbLocator> repository)
         {
             this._dal = repository;
         }

@@ -9,17 +9,13 @@ using System.Threading.Tasks;
 
 namespace Core.Services
 {
-    public class BaseService<T> : IBaseService<T> where T : class, IPrivateEntity, new()
+    public class BaseService<T,DbLocator> : IBaseService<T> where T : class, IPrivateEntity, new() where DbLocator : class,IDbContextLocator
     {
-        protected IRepository<T> _dal;
+        protected IRepository<T, DbLocator> _dal;
         private string _connStr;
-        public IRepository<T> GetRepository()
-        {
-            return this._dal;
-        }
+
         public async Task<T> Add(T entity)
         {
-
             var result = await _dal.InsertAsync(entity);
             return result.Entity;
         }
