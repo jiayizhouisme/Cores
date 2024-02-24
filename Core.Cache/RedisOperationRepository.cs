@@ -198,5 +198,11 @@ namespace Core.Cache
 
             return result;
         }
+
+        public async ValueTask<long> RemoveFromList<T>(string key, T value)
+        {
+            key = keyprefix + key;
+            return await _database.ListRemoveAsync(key, _serializerProvider.Serialize(value));
+        }
     }
 }

@@ -124,5 +124,10 @@ namespace Core.Cache
             await base.Expire(key, expire);
             return result;
         }
+
+        public ValueTask<long> RemoveFromList<T>(string key, T value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
