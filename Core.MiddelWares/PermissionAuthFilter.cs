@@ -11,9 +11,10 @@ namespace Core.MiddelWares
 {
     public class PermissionAuthFilter : IAsyncAuthorizationFilter
     {
-        private readonly Permissions permissions;
+        private readonly Permissions[] permissions;
         private readonly IHttpContextUser httpContextUser;
-        public PermissionAuthFilter(IHttpContextUser httpContextUser, Permissions permissions)
+
+        public PermissionAuthFilter(IHttpContextUser httpContextUser, Permissions[] permissions)
         {
             this.httpContextUser = httpContextUser;
             this.permissions = permissions;
@@ -21,7 +22,7 @@ namespace Core.MiddelWares
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            if (httpContextUser.Permissions != permissions)
+            if (!permissions.Contains(httpContextUser.Permissions))
             {
                 context.Result = new UnauthorizedResult();
             }
