@@ -18,25 +18,38 @@ namespace Core.SignalR
             users = new Dictionary<string, RealOnlineClient>();
         }
 
-        public void AddClient(string connId, RealOnlineClient client)
+        public void AddClient(string userId, RealOnlineClient client)
         {
-            users.Add(connId, client);
+            users.Add(userId, client);
         }
 
-        public void RemoveClient(string connId)
+        public void RemoveClientByUserId(string userId)
         {
-            users.Remove(connId);
+            RealOnlineClient client = null;
+            users.TryGetValue(userId, out client);
+            if (client != null)
+            {
+                users.Remove(userId);
+            }
+            
+        }
+
+        public void RemoveClientByConnId(string connId)
+        {
+            var client = this.users.Where(a => a.Value != null && a.Value.ConnId == connId).Select(a => a.Key).FirstOrDefault();
+            if (client != null)
+            {
+                this.RemoveClientByUserId(client);
+            }
+
         }
 
         public RealOnlineClient isOnline(string userId)
         {
-            var client = users.Where(a => a.Value != null && a.Value.UserId == userId).Select(a => a.Value);
-            if (client.Count() > 0)
-            {
-                return client.FirstOrDefault();
-            }
-            return null;
-        }
+            RealOnlineClient client = null;
+            users.TryGetValue(userId, out client);
+            return client;
+        }          
     }
 
     public class RealOnlineClient

@@ -12,11 +12,10 @@ using System.Threading.Tasks;
 namespace Core.SignalR
 {
     [Authorize]
-    [MapHub("/hubs/chathub")]
     public class ChatHub : Hub<IChatClient>
     {
-        private readonly ISignalRUserService userapp;
-        private readonly IHttpContextUser httpContextUser;
+        protected readonly ISignalRUserService userapp;
+        protected readonly IHttpContextUser httpContextUser;
         public ChatHub(ISignalRUserService userapp, IHttpContextUser httpContextUser) : base()
         {
             this.userapp = userapp;
@@ -45,7 +44,7 @@ namespace Core.SignalR
             else
             {
                 //1、移除
-                userapp.RemoveClient(real.UserId);
+                userapp.RemoveClientByUserId(real.UserId);
                 //2、新增
                 userapp.AddClient(name, client);
             }
@@ -56,7 +55,7 @@ namespace Core.SignalR
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var connId = Context.ConnectionId;
-            userapp.RemoveClient(connId);
+            userapp.RemoveClientByConnId(connId);
             await base.OnDisconnectedAsync(exception);
         }
 

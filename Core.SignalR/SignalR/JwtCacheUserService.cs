@@ -15,9 +15,10 @@ namespace Core.SignalR
         {
             this._cache = _cache;
         }
-        public async void AddClient(string connId, RealOnlineClient client)
+        public async void AddClient(string userId, RealOnlineClient client)
         {
-            await _cache.Set(connId, client, 43200);
+            await _cache.Set(userId, client, 43200);
+            await _cache.Set(client.ConnId, userId);
         }
 
         public RealOnlineClient isOnline(string userId)
@@ -26,9 +27,26 @@ namespace Core.SignalR
             return client.Result;
         }
 
-        public async void RemoveClient(string connId)
+        public async void RemoveClientByConnId(string connId)
         {
-            await _cache.Del(connId);
+            var userId = await ConnidToUserId(connId);
+            RemoveClientByUserId(userId);
+        }
+
+        public async void RemoveClientByUserId(string userId)
+        {
+            var client = await _cache.Get<RealOnlineClient>(userId);
+            if (client != null)
+            {
+                string connId = client.ConnId;
+                await _cache.Del(userId);
+                await _cache.Del(connId);
+            }
+            
+        }
+        private async Task<string> ConnidToUserId(string connId)
+        {
+            return await _cache.Get<string>(connId);
         }
     }
 }

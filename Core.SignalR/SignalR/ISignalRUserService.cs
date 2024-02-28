@@ -8,10 +8,12 @@ namespace Core.SignalR
 {
     public interface ISignalRUserService
     {
-        public void AddClient(string connId, RealOnlineClient client);
+        public void AddClient(string userId, RealOnlineClient client);
 
-        public void RemoveClient(string connId);
+        public void RemoveClientByUserId(string userId);
+        public void RemoveClientByConnId(string connId);
 
         public RealOnlineClient isOnline(string userId);
+      
     }
 }

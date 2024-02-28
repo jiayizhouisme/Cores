@@ -13,6 +13,8 @@ namespace Core.Auth
         {
         }
 
+
+        public override string Name => GetUserInfoFromToken("name").FirstOrDefault();
         protected override string GetTenantId()
         {
             return base.GetRealTenantId();

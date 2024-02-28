@@ -20,15 +20,15 @@ namespace Core.Auth
             _accessor = accessor;
         }
 
-        public string Name => _accessor.HttpContext.User.Identity.Name;
+        public virtual string Name => _accessor.HttpContext.User.Identity.Name;
 
-        public string ID => GetUserInfoFromToken("jti").FirstOrDefault();
+        public virtual string ID => GetUserInfoFromToken("jti").FirstOrDefault();
 
-        public string TenantId => GetTenantId();
-        public string RealTenantId => GetRealTenantId();
-        public string ClientIp => GetClientIp();
-        public Permissions Permissions => GetPermissions();
-        public string Agent => GetAgent();
+        public virtual string TenantId => GetTenantId();
+        public virtual string RealTenantId => GetRealTenantId();
+        public virtual string ClientIp => GetClientIp();
+        public virtual Permissions Permissions => GetPermissions();
+        public virtual string Agent => GetAgent();
         public virtual bool IsAuthenticated()
         {
             return _accessor.HttpContext.User.Identity.IsAuthenticated;
