@@ -15,7 +15,7 @@ namespace Core.Entity
     {
         [DefaultValue(1), Range(1, int.MaxValue, ErrorMessage = "页数值应大于0")]
         public int pageNo { get; set; }
-        [DefaultValue(10), Range(1, 200, ErrorMessage = "数值不在范围内!")]
+        [DefaultValue(10), Range(1, 999, ErrorMessage = "数值不在范围内!")]
         public int pageSize { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace Core.SignalR
         }
         public async void AddClient(string userId, RealOnlineClient client)
         {
-            await _cache.Set(userId, client, 43200);
+            await _cache.Set(userId, client);
             await _cache.Set(client.ConnId, userId);
         }
 
