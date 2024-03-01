@@ -15,10 +15,10 @@ namespace Core.SignalR
         {
             this._cache = _cache;
         }
-        public async void AddClient(string userId, RealOnlineClient client)
+        public void AddClient(string userId, RealOnlineClient client)
         {
-            await _cache.Set(userId, client);
-            await _cache.Set(client.ConnId, userId);
+            _cache.Set(userId, client);
+            _cache.Set(client.ConnId, userId);
         }
 
         public RealOnlineClient isOnline(string userId)
@@ -27,26 +27,30 @@ namespace Core.SignalR
             return client.Result;
         }
 
-        public async void RemoveClientByConnId(string connId)
+        public void RemoveClientByConnId(string connId)
         {
-            var userId = await ConnidToUserId(connId);
-            RemoveClientByUserId(userId);
-        }
-
-        public async void RemoveClientByUserId(string userId)
-        {
-            var client = await _cache.Get<RealOnlineClient>(userId);
-            if (client != null)
+            var userId = ConnidToUserId(connId);
+            if (userId != null)
             {
-                string connId = client.ConnId;
-                await _cache.Del(userId);
-                await _cache.Del(connId);
+                RemoveClientByUserId(userId);
             }
             
         }
-        private async Task<string> ConnidToUserId(string connId)
+
+        public void RemoveClientByUserId(string userId)
         {
-            return await _cache.Get<string>(connId);
+            var client = _cache.Get<RealOnlineClient>(userId);
+            if (client != null)
+            {
+                string connId = client.Result.ConnId;
+                _cache.Del(userId);
+                _cache.Del(connId);
+            }
+            
+        }
+        private string ConnidToUserId(string connId)
+        {
+            return _cache.Get<string>(connId).Result;
         }
     }
 }

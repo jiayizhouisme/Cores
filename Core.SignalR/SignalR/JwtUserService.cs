@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -15,7 +16,7 @@ namespace Core.SignalR
 
         public JwtUserService()
         {
-            users = new Dictionary<string, RealOnlineClient>();
+            users = new ConcurrentDictionary<string, RealOnlineClient>();
         }
 
         public void AddClient(string userId, RealOnlineClient client)
