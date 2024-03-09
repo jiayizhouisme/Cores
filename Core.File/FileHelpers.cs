@@ -162,9 +162,7 @@ namespace SampleApp.Utilities
 
             } while (bytesRead > 0);
 
-            return buffer.ToArray();
-                    
-            
+            return buffer;
         }
 
         private static bool IsValidFileExtensionAndSignature(string fileName, Stream data, string[] permittedExtensions)

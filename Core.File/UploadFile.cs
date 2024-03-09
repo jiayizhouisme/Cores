@@ -10,23 +10,27 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.WebUtilities;
 using SampleApp.Utilities;
 using Core.File.Model;
+using SqlSugar;
+using Microsoft.Extensions.Hosting;
+using Furion.TaskQueue;
+using Furion.DependencyInjection;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Core.File
 {
-    public class UploadFile
+    public class UploadFile : ISingleton
     {
-        public static async Task UploadPhysical(IHttpContextAccessor httpContext,FileChunk fileChunk)
+        public async Task UploadPhysical(string type,Stream body,FileChunk fileChunk)
         {
             int size = fileChunk.Size;
             if (fileChunk.Total < fileChunk.Size)
             {
                 size = fileChunk.Total;
             }
-            var Request = httpContext.HttpContext.Request;
             var boundary = MultipartRequestHelper.GetBoundary(
-                MediaTypeHeaderValue.Parse(Request.ContentType),
+                MediaTypeHeaderValue.Parse(type),
                 size);
-            var reader = new MultipartReader(boundary, Request.Body);
+            var reader = new MultipartReader(boundary, body);
             var section = await reader.ReadNextSectionAsync();
 
             while (section != null)
@@ -44,6 +48,7 @@ namespace Core.File
                     if (!MultipartRequestHelper
                         .HasFileContentDisposition(contentDisposition))
                     {
+                        await Task.CompletedTask;
                     }
                     else
                     {
@@ -51,16 +56,24 @@ namespace Core.File
                         // the file name, HTML-encode the value.
                         var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                                 contentDisposition.FileName.Value);
-                        var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                        //var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                        var trustedFileNameForFileStorage = GetFileName(section.ContentDisposition);
+                        fileChunk.FileName = trustedFileNameForFileStorage;
+                        //var streamedFileContent = await FileHelpers.ProcessStreamedFile(
+                            //section, contentDisposition, size);
 
-                        var streamedFileContent = await FileHelpers.ProcessStreamedFile(
-                            section, contentDisposition, size);
-
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
 
                         using (var targetStream = System.IO.File.Create(
-                            Path.Combine("D:/", trustedFileNameForFileStorage)))
+                        Path.Combine("D:/", trustedFileNameForFileStorage)))
                         {
-                            await targetStream.WriteAsync(streamedFileContent);
+                            do
+                            {
+                                bytesRead = await section.Body.ReadAsync(buffer, 0, buffer.Length);
+                                await targetStream.WriteAsync(buffer,0, bytesRead);
+                            } while (bytesRead > 0);
+                            
                         }
                     }
                 }
@@ -70,5 +83,89 @@ namespace Core.File
                 section = await reader.ReadNextSectionAsync();
             }
         }
+
+        public async Task MergeChunkFile(FileChunk chunk)
+        {
+            //文件上传目录名
+            var uploadDirectoryName = Path.Combine("D:/","", chunk.FileName);
+
+            //分片文件命名约定
+            var partToken = FileSort.PART_NUMBER;
+
+            //上传文件实际名称
+            var baseFileName = chunk.FileName.Substring(0, chunk.FileName.IndexOf(partToken));
+
+            //根据命名约定查询指定目录下符合条件的所有分片文件
+            var searchpattern = $"{Path.GetFileName(baseFileName)}{partToken}*";
+
+            //获取所有分片文件列表
+            var filesList = Directory.GetFiles(Path.GetDirectoryName(uploadDirectoryName), searchpattern);
+            if (!filesList.Any()) { return; }
+
+            var mergeFiles = new List<FileSort>();
+            foreach (string file in filesList)
+            {
+                var sort = new FileSort
+                {
+                    FileName = file
+                };
+
+                baseFileName = file.Substring(0, file.IndexOf(partToken));
+
+                var fileIndex = file.Substring(file.IndexOf(partToken) + partToken.Length);
+
+                int.TryParse(fileIndex, out var number);
+                if (number <= 0) { continue; }
+
+                sort.PartNumber = number;
+
+                mergeFiles.Add(sort);
+            }  // 按照分片排序
+            var mergeOrders = mergeFiles.OrderBy(s => s.PartNumber).ToList();
+
+            // 合并文件
+            using var fileStream = new FileStream(baseFileName, FileMode.Create);
+            foreach (var fileSort in mergeOrders)
+            {
+                using FileStream fileChunk =
+                   new FileStream(fileSort.FileName, FileMode.Open);
+                await fileChunk.CopyToAsync(fileStream);
+            }
+
+            //删除分片文件
+            DeleteFile(mergeFiles);
+
+        }
+
+        public void DeleteFile(List<FileSort> files)
+        {
+            foreach (var file in files)
+            {
+                System.IO.File.Delete(file.FileName);
+            }
+        }
+
+        private string GetFileName(string contentDisposition)
+        {
+            return contentDisposition
+              .Split(';')
+              .SingleOrDefault(part => part.Contains("filename"))
+              .Split('=')
+              .Last()
+              .Trim('"');
         }
     }
+
+    public class FileSort
+    {
+        public const string PART_NUMBER = ".partNumber-";
+        /// <summary>
+        /// 文件名
+        /// </summary>
+        public string FileName { get; set; }
+        /// <summary>
+        /// 文件分片号
+        /// </summary>
+        public int PartNumber { get; set; }
+    }
+}
