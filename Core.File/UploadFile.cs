@@ -23,7 +23,7 @@ namespace Core.File
     {
         public async Task UploadPhysical(string type,
             Stream body,
-            FileChunk fileChunk, 
+            FileChunk fileChunk,
             [EnumeratorCancellation] CancellationTokenSource cancellationTokenSource = default)
         {
             var boundary = MultipartRequestHelper.GetBoundary(
@@ -63,7 +63,7 @@ namespace Core.File
                         var trustedFileNameForFileStorage = GetFileName(section.ContentDisposition);
                         fileChunk.FileName = trustedFileNameForFileStorage;
                         //var streamedFileContent = await FileHelpers.ProcessStreamedFile(
-                            //section, contentDisposition, size);
+                        //section, contentDisposition, size);
 
                         byte[] buffer = new byte[8192];
                         int bytesRead;
@@ -75,9 +75,9 @@ namespace Core.File
                             {
                                 cancellationTokenSource.Token.ThrowIfCancellationRequested();
                                 bytesRead = await section.Body.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token);
-                                await targetStream.WriteAsync(buffer,0, bytesRead, cancellationTokenSource.Token);
+                                await targetStream.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
                             } while (bytesRead > 0);
-                            
+
                         }
                     }
                 }
@@ -91,7 +91,7 @@ namespace Core.File
         public async Task MergeChunkFile(FileChunk chunk)
         {
             //文件上传目录名
-            var uploadDirectoryName = Path.Combine("Upload","", chunk.FileName);
+            var uploadDirectoryName = Path.Combine("Upload", "", chunk.FileName);
 
             //分片文件命名约定
             var partToken = FileSort.PART_NUMBER;
