@@ -16,6 +16,7 @@ using Furion.TaskQueue;
 using Furion.DependencyInjection;
 using Microsoft.Extensions.Caching.Memory;
 using System.Runtime.CompilerServices;
+using System.IO.Pipelines;
 
 namespace Core.File
 {
@@ -64,20 +65,11 @@ namespace Core.File
                         fileChunk.FileName = trustedFileNameForFileStorage;
                         //var streamedFileContent = await FileHelpers.ProcessStreamedFile(
                         //section, contentDisposition, size);
-
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-
                         using (var targetStream = System.IO.File.Create(
                         Path.Combine("Upload", trustedFileNameForFileStorage)))
                         {
-                            do
-                            {
-                                cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                                bytesRead = await section.Body.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token);
-                                await targetStream.WriteAsync(buffer, 0, bytesRead, cancellationTokenSource.Token);
-                            } while (bytesRead > 0);
-
+                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                            await section.Body.CopyToAsync(targetStream, cancellationTokenSource.Token);
                         }
                     }
                 }

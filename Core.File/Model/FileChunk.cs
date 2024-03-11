@@ -25,14 +25,14 @@ namespace Core.File.Model
         /// <summary>
         /// 文件读取起始位置
         /// </summary>
-        public int Start { get; set; }
+        public long Start { get; set; }
         /// <summary>
         /// 文件读取结束位置
         /// </summary>
-        public int End { get; set; }
+        public long End { get; set; }
         /// <summary>
         /// 文件大小
         /// </summary>
-        public int Total { get; set; }
+        public long Total { get; set; }
     }
 }
