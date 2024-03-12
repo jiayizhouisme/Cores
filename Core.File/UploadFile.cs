@@ -60,7 +60,6 @@ namespace Core.File
                         // the file name, HTML-encode the value.
                         var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                                 contentDisposition.FileName.Value);
-                        //var trustedFileNameForFileStorage = Path.GetRandomFileName();
                         var trustedFileNameForFileStorage = GetFileName(section.ContentDisposition);
                         fileChunk.FileName = trustedFileNameForFileStorage;
                         //var streamedFileContent = await FileHelpers.ProcessStreamedFile(
@@ -80,7 +79,7 @@ namespace Core.File
             }
         }
 
-        public async Task MergeChunkFile(FileChunk chunk)
+        public async Task<MergeRet> MergeChunkFile(FileChunk chunk)
         {
             //文件上传目录名
             var uploadDirectoryName = Path.Combine("Upload", "", chunk.FileName);
@@ -96,7 +95,7 @@ namespace Core.File
 
             //获取所有分片文件列表
             var filesList = Directory.GetFiles(Path.GetDirectoryName(uploadDirectoryName), searchpattern);
-            if (!filesList.Any()) { return; }
+            if (!filesList.Any()) { return null; }
 
             var mergeFiles = new List<FileSort>();
             foreach (string file in filesList)
@@ -130,7 +129,7 @@ namespace Core.File
 
             //删除分片文件
             DeleteFile(mergeFiles);
-
+            return new MergeRet { FileName = Path.GetFileName(baseFileName), Path = baseFileName.Replace("\\","/")};
         }
 
         public void DeleteFile(List<FileSort> files)
@@ -164,4 +163,9 @@ namespace Core.File
         /// </summary>
         public int PartNumber { get; set; }
     }
+    public class MergeRet { 
+        public string FileName { get; set; }
+        public string Path { get; set; }
+    }
+
 }
