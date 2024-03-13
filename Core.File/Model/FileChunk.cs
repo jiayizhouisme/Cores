@@ -23,14 +23,6 @@ namespace Core.File.Model
         /// </summary>
         public int Chunks { get; set; }
         /// <summary>
-        /// 文件读取起始位置
-        /// </summary>
-        public long Start { get; set; }
-        /// <summary>
-        /// 文件读取结束位置
-        /// </summary>
-        public long End { get; set; }
-        /// <summary>
         /// 文件大小
         /// </summary>
         public long Total { get; set; }
