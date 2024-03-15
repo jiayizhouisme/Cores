@@ -22,7 +22,7 @@ namespace Core.File
 {
     public class UploadFile : ISingleton
     {
-        public async Task UploadPhysical(string type,
+        public async Task<string> UploadPhysical(string type,
             Stream body,
             FileChunk fileChunk,
             [EnumeratorCancellation] CancellationTokenSource cancellationTokenSource = default)
@@ -64,12 +64,13 @@ namespace Core.File
                         fileChunk.FileName = trustedFileNameForFileStorage;
                         //var streamedFileContent = await FileHelpers.ProcessStreamedFile(
                         //section, contentDisposition, size);
-                        using (var targetStream = System.IO.File.Create(
-                        Path.Combine("Upload", trustedFileNameForFileStorage)))
+                        var path = Path.Combine("Upload", trustedFileNameForFileStorage);
+                        using (var targetStream = System.IO.File.Create(path))
                         {
                             cancellationTokenSource.Token.ThrowIfCancellationRequested();
                             await section.Body.CopyToAsync(targetStream, cancellationTokenSource.Token);
                         }
+                        return path;
                     }
                 }
 
@@ -77,6 +78,7 @@ namespace Core.File
                 // read the headers for the next section.
                 section = await reader.ReadNextSectionAsync();
             }
+            return null;
         }
 
         public async Task<MergeRet> MergeChunkFile(FileChunk chunk)

@@ -13,6 +13,7 @@ namespace Core.EntityFrameWork
     {
         public MultiTenantDbContext_MYSQL(DbContextOptions<MultiTenantDbContext_MYSQL> options) : base(options)
         {
+            InsertOrUpdateIgnoreNullValues = true;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
