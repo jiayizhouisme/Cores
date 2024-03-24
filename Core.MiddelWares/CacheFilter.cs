@@ -9,7 +9,7 @@ namespace Core.MiddelWares
     {
         protected readonly ICacheOperation _cache;
         protected string suffixed;
-        public static int _expireTime = 30;
+        public const int _expireTime = 30;
 
         public CacheFilter(ICacheOperation _cache)
         {
