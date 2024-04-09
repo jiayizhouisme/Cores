@@ -23,7 +23,7 @@ namespace Core.Auth
         public virtual string Name => _accessor.HttpContext.User.Identity.Name;
 
         public virtual string ID => GetUserInfoFromToken("jti").FirstOrDefault();
-
+        public virtual string ExtraInfo => GetUserInfoFromToken("extra_info").FirstOrDefault();
         public virtual string TenantId => GetTenantId();
         public virtual string RealTenantId => GetRealTenantId();
         public virtual string ClientIp => GetClientIp();

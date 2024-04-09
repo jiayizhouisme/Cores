@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Tenant\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Furion" Version="4.9.1.28" />
     <PackageReference Include="Furion.Extras.DatabaseAccessor.SqlSugar" Version="4.9.1.28" />
   </ItemGroup>

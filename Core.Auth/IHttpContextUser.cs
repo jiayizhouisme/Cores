@@ -8,6 +8,7 @@ namespace Core.Auth
         string Name { get; }
         string ID { get; }
         string RealTenantId { get; }
+        string ExtraInfo { get; }
         string ClientIp { get; }
         Permissions Permissions { get; }
         string Agent { get; }
