@@ -108,5 +108,10 @@ namespace Core.Services
         {
             return await _dal.AnyAsync(predicate);
         }
+
+        public async Task SaveChangeNow()
+        {
+            await this._dal.SaveNowAsync();
+        }
     }
 }

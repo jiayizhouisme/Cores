@@ -28,6 +28,7 @@ namespace Core.Services
         public Task Delete(ICollection<T> entity);
         public Task DeleteNow(T entity);
         public Task DeleteNow(ICollection<T> entity);
+        public Task SaveChangeNow();
 
     }
 }

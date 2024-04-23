@@ -48,8 +48,9 @@ namespace Core.Cache
             while (_lock != true)
             {
                 await Task.Delay(200);
-                _lock = await this._database.LockTakeAsync(key, value, TimeSpan.MaxValue);
+                _lock = await this._database.LockTakeAsync(key, value, TimeSpan.FromSeconds(expireTime));
             }
+
             return 1;
         }
 
