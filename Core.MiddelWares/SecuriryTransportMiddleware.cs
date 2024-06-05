@@ -24,13 +24,16 @@ namespace Core.MiddelWares
             this.jsonProvider = jsonProvider;
             if (keys.Item1.IsNullOrEmpty() || keys.Item2.IsNullOrEmpty()) {
                 keys = RSAEncryption.GenerateSecretKey(2048);
+                var en = RSAEncryption.Encrypt(jsonProvider.Serialize(jsonProvider.Deserialize<object>("{\r\n  \"username\": \"string\",\r\n  \"password\": \"string\"\r\n}"))
+                    , keys.Item1);
             }
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             // request handle
-            if (context.Request.Method != HttpMethods.Post || !context.Request.Path.ToString().Contains("api"))
+            if (context.Request.Method != HttpMethods.Post ||
+                !context.Request.Path.ToString().Contains("api"))
             {
                 await _next(context);
                 await Task.CompletedTask;
@@ -40,10 +43,7 @@ namespace Core.MiddelWares
                 var encryptedBody = context.Request.Body;
                 var encryptedContent = await new StreamReader(encryptedBody).ReadToEndAsync();
                 var decryptedBody = RSAEncryption.Decrypt(encryptedContent,keys.Item2);
-                var originBody = jsonProvider.Deserialize<object>(decryptedBody);
-
-                var json = jsonProvider.Serialize(originBody);
-                var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var requestContent = new StringContent(decryptedBody, Encoding.UTF8, "application/json");
                 var stream = await requestContent.ReadAsStreamAsync();
                 context.Request.Body = stream;
 
