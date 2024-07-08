@@ -76,4 +76,44 @@ namespace Core.MiddelWares
             return app.UseMiddleware<SecuriryTransportMiddleware>();
         }
     }
+
+
+    public static class RSAEncryptionExtension
+    {
+        /// <summary>
+        /// 签名
+        /// </summary>
+        /// <param name="halg">算法如:SHA256</param>
+        /// <param name="text">明文内容</param>
+        /// <param name="privateKey">私钥</param>
+        /// <returns>签名内容</returns>
+        public static string Sign(string halg, string text, string privateKey)
+        {
+            string encryptedContent;
+            using var rsa = new System.Security.Cryptography.RSACryptoServiceProvider();
+            rsa.FromXmlString(privateKey);
+
+            var encryptedData = rsa.SignData(Encoding.Default.GetBytes(text), halg);
+            encryptedContent = Convert.ToBase64String(encryptedData);
+
+            return encryptedContent;
+        }
+
+        /// <summary>
+        /// 校验
+        /// </summary>
+        /// <param name="halg">算法如:SHA256</param>
+        /// <param name="text">明文内容</param>
+        /// <param name="publicKey">公钥</param>
+        /// <param name="sign">签名内容</param>
+        /// <returns>是否一致</returns>
+        public static bool Verify(string halg, string text, string publicKey, string sign)
+        {
+            using var rsa = new System.Security.Cryptography.RSACryptoServiceProvider();
+            rsa.FromXmlString(publicKey);
+
+            return rsa.VerifyData(Encoding.Default.GetBytes(text), halg, Convert.FromBase64String(sign));
+        }
+    
+    }
 }

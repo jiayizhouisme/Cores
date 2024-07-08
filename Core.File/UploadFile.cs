@@ -121,11 +121,11 @@ namespace Core.File
             var mergeOrders = mergeFiles.OrderBy(s => s.PartNumber).ToList();
 
             // 合并文件
-            using var fileStream = new FileStream(baseFileName, FileMode.Create);
+            using var fileStream = new FileStream(baseFileName, FileMode.OpenOrCreate,FileAccess.ReadWrite);
             foreach (var fileSort in mergeOrders)
             {
                 using FileStream fileChunk =
-                   new FileStream(fileSort.FileName, FileMode.Open);
+                   new FileStream(fileSort.FileName, FileMode.Open,FileAccess.Read);
                 await fileChunk.CopyToAsync(fileStream);
             }
 

@@ -60,6 +60,15 @@ namespace Core.Services
         {
             return _dal.AsQueryable().AsNoTracking().Where(predicate);
         }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return _dal.AsQueryable();
+        }
+        public IQueryable<T> GetQueryableNt()
+        {
+            return _dal.AsQueryable().AsNoTracking();
+        }
         public IQueryable<T> GetQueryable(Expression<Func<T, bool>> predicate)
         {
             return _dal.AsQueryable().AsNoTracking().Where(predicate);
