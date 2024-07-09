@@ -30,7 +30,7 @@ namespace Core.EntityFrameWork
         public virtual string GetDatabaseConnectionString()
         {
 
-            if (user.TenantId != null)
+            if (user.TenantId != null && App.Configuration["ConnectionStrings:UseTenant"] == "yes")
             {
                 try
                 {
