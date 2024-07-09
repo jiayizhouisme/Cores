@@ -13,7 +13,6 @@ namespace Core.EntityFrameWork
     {
         public MultiTenantDbContext_SQL(DbContextOptions<MultiTenantDbContext_SQL> options) : base(options)
         {
-            int i = 1;
             InsertOrUpdateIgnoreNullValues = true;
         }
 
