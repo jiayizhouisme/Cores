@@ -20,7 +20,6 @@ namespace Core.Wechat
             services.AddSingleton<IWechat,Wechat>();
             services.AddSingleton<IWechatConfig,T>();
             services.AddSchedule(a => {
-                a.AddJob(typeof(AutoRefreshAccessTokenJob));
                 a.AddJob(typeof(LoadWechatConfigJob),Triggers.Daily().SetRunOnStart(true));
             });
             return services;

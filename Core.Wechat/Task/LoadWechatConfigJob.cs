@@ -1,6 +1,7 @@
 ﻿using Core.Wechat.Rep;
 using Furion.DataValidation;
 using Furion.Schedule;
+using SKIT.FlurlHttpClient.Wechat.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,17 @@ namespace Core.Wechat.Task
         public async System.Threading.Tasks.Task ExecuteAsync(JobExecutingContext context, CancellationToken stoppingToken)
         {
             var r = await this.config.GetConfigs();
+            
             foreach (var _r in r)
             {
+                var options = new WechatApiClientOptions()
+                {
+                    AppId = _r.appid,
+                    AppSecret = _r.appSecret,
+                };
+                var client = WechatApiClientBuilder.Create(options).Build();
+                Wechat.Add(_r.key,client);
+
                 var token = await wechat.GetToken(_r.key);
                 if (token == null || wechat.IsTokenExpired(token.Value))
                 {
