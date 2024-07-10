@@ -25,5 +25,4 @@ namespace Core.Wechat
             return services;
         }
     }
-
 }

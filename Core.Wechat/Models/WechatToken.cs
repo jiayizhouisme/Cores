@@ -8,6 +8,7 @@ namespace Core.Wechat.Models
 {
     public struct WechatToken
     {
+        public string key { get; set; }
         public string AccessToken { get; set; }
         public DateTime ExpireDate { get; set; }
     }

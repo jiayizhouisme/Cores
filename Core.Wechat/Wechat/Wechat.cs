@@ -96,13 +96,11 @@ namespace Core.Wechat
                 WechatToken wt = new WechatToken();
                 wt.AccessToken = response.AccessToken;
                 wt.ExpireDate = now.AddSeconds(response.ExpiresIn);
-
+                wt.key = key;
                 await _cache.Set(wechatCachePrefix + key,wt,7200);
                 return wt;
             }
             return null;
-            
         }
-
     }
 }
