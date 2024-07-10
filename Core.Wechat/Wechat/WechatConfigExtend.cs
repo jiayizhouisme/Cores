@@ -18,9 +18,9 @@ namespace Core.Wechat
         public static IServiceCollection AddWeChat<T>(this IServiceCollection services) where T : class,IWechatConfig
         {
             services.AddSingleton<IWechat,Wechat>();
-            services.AddSingleton<IWechatConfig,T>();
+            services.AddTransient<IWechatConfig,T>();
             services.AddSchedule(a => {
-                a.AddJob(typeof(LoadWechatConfigJob),Triggers.Daily().SetRunOnStart(true));
+                a.AddJob<LoadWechatConfigJob>(Triggers.Daily().SetRunOnStart(true));
             });
             return services;
         }
