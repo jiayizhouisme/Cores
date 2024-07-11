@@ -1,5 +1,8 @@
 ﻿using Core.Cache;
+using Core.Wechat.EventBus;
 using Core.Wechat.Models;
+using Core.Wechat.Rep;
+using Furion.EventBus;
 using SKIT.FlurlHttpClient.Wechat.Api;
 using SKIT.FlurlHttpClient.Wechat.Api.Models;
 using System;
@@ -12,18 +15,24 @@ namespace Core.Wechat
 {
     public class Wechat : WechatBase, IWechat
     {
-        private static readonly IDictionary<string, WechatApiClient> wechatApiClients = new Dictionary<string, WechatApiClient>();
+        private readonly IDictionary<string, WechatApiClient> wechatApiClients;
+        private readonly IWechatConfig wechatConfig;
         private readonly ICacheOperation _cache;
-        public Wechat(ICacheOperation _cache)
+        private readonly IEventPublisher eventPublisher;
+        public Wechat(ICacheOperation _cache, IWechatConfig wechatConfig, IEventPublisher eventPublisher)
         {
+            this.wechatApiClients = new Dictionary<string, WechatApiClient>();
             this._cache = _cache;
+            this.wechatConfig = wechatConfig;
+            this.eventPublisher = eventPublisher;
         }
-        public static void Add(string key, WechatApiClient wc)
+
+        public void Add(string key, WechatApiClient wc)
         {
             wechatApiClients.Add(key, wc);
         }
 
-        public static WechatApiClient Get(string key)
+        public WechatApiClient Get(string key)
         {
             return wechatApiClients[key];
         }
@@ -51,17 +60,34 @@ namespace Core.Wechat
         {
             var client = Get(key);
             var response = await client.ExecuteSnsOAuth2AccessTokenAsync(new SnsOAuth2AccessTokenRequest() 
-            { 
+            {
                 Code = code,
                 GrantType = grant_type }
             );
             if (response.IsSuccessful())
             {
+                //先从其他地方找
+                var WechatUser = await wechatConfig.GetWechatUserByOpenId(response.OpenId);
+                if (WechatUser != null)
+                {
+                    var _u = WechatUser.Value;
+                    _u.Key = key;
+                    await eventPublisher.PublishAsync
+                        (WechatUserCheckAndUpdateEvent.Event_OnGetWechatUserInfoFromCustom,_u);
+                    return _u;
+                }
+                //没有找到就去微信查找
                 var wu = await GetUserInfoByOpenID(key,response.OpenId,response.AccessToken);
+                if (wu != null)
+                {
+                    await eventPublisher.PublishAsync
+                        (WechatUserCheckAndUpdateEvent.Event_OnGetWechatUserInfoFromWechatFirstTime, wu);
+                }
                 return wu;
             }
             return null;
         }
+
         public async Task<WechatUser?> GetUserInfoByOpenID(string key, string openid, string user_access_token)
         {
             var client = Get(key);
@@ -81,6 +107,7 @@ namespace Core.Wechat
                 wu.Country = response.Country;
                 wu.City = response.City;
                 wu.UnionID = response.UnionId;
+                wu.Key = key;
                 return wu;
             }
             return null;

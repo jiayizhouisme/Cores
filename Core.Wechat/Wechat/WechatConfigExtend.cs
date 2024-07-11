@@ -19,6 +19,7 @@ namespace Core.Wechat
         {
             services.AddSingleton<IWechat,Wechat>();
             services.AddTransient<IWechatConfig,T>();
+            
             services.AddSchedule(a => {
                 a.AddJob<LoadWechatConfigJob>(Triggers.Daily().SetRunOnStart(true));
             });

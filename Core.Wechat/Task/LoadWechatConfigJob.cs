@@ -31,7 +31,7 @@ namespace Core.Wechat.Task
                     AppSecret = _r.appSecret,
                 };
                 var client = WechatApiClientBuilder.Create(options).Build();
-                Wechat.Add(_r.key,client);
+                wechat.Add(_r.key,client);
 
                 var token = await wechat.GetToken(_r.key);
                 if (token == null || wechat.IsTokenExpired(token.Value))

@@ -8,6 +8,7 @@ namespace Core.Wechat.Models
 {
     public struct WechatUser
     {
+        public string Key { get; set; }
         public string OpenID { get; set; }
         public string UnionID { get; set; }
         public string Access_Token { get; set; }
