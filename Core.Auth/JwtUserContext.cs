@@ -90,7 +90,16 @@ namespace Core.Auth
         {
             if (_accessor.HttpContext != null)
             {
-                return _accessor.HttpContext.Request.Host.Host + ":" + _accessor.HttpContext.Request.Host.Port;
+                int? port = _accessor.HttpContext.Request.Host.Port;
+                if (port != null)
+                {
+                    return _accessor.HttpContext.Request.Host.Host + ":" + _accessor.HttpContext.Request.Host.Port;
+                }
+                else
+                {
+                    return _accessor.HttpContext.Request.Host.Host;
+                }
+                
             }
             return null;
         }

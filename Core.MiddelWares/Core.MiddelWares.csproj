@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core.Auth\Core.Auth.csproj" />
     <ProjectReference Include="..\Core.Cache\Core.Cache.csproj" />
+    <ProjectReference Include="..\Core.User\Core.User.csproj" />
   </ItemGroup>
 
 </Project>
