@@ -1,5 +1,6 @@
 ﻿using Core.Wechat.Entity;
 using Core.Wechat.Rep;
+using Core.Wechat.Safe;
 using Core.Wechat.Task;
 using Furion.DatabaseAccessor;
 using Furion.Schedule;
@@ -19,9 +20,10 @@ namespace Core.Wechat
         {
             services.AddSingleton<IWechat,Wechat>();
             services.AddTransient<IWechatConfig,T>();
-            
+            services.AddSingleton<IWechatSafe, WechatSafe>();
             services.AddSchedule(a => {
                 a.AddJob<LoadWechatConfigJob>(Triggers.Daily().SetRunOnStart(true));
+                a.AddJob<WechatAccessTokenRefreshJob>(Triggers.Minutely());
             });
             return services;
         }

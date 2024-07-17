@@ -14,10 +14,8 @@ namespace Core.Wechat
         public Task<WechatToken?> GetToken(string key);
         public void Add(string key, WechatApiClient wc);
         public WechatApiClient Get(string key);
-
-
         public Task<WechatToken?> RegisteToken(string key);
-        public bool IsTokenExpired(WechatToken token);
+        public bool IsTokenExpired(WechatToken token,int beforeTime = 0);
         public Task<WechatUser?> GetUserOpenID(string key,string code, string grant_type = "authorization_code");
         public Task<WechatUser?> GetUserInfoByOpenID(string key, string openid, string user_access_token);
     }

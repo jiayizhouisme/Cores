@@ -1,7 +1,11 @@
-﻿using Core.Wechat.Models;
+﻿using Core.Cache;
+using Core.Wechat.Models;
 using Core.Wechat.Rep;
+using Core.Wechat.Safe;
+using Furion;
 using Furion.DependencyInjection;
 using Furion.EventBus;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +16,20 @@ namespace Core.Wechat.EventBus
 {
     public class WechatUserCheckAndUpdateEvent : IEventSubscriber, ISingleton
     {
-        private readonly IWechatConfig _config;
         private readonly IWechat wechat;
+        private readonly IServiceProvider serviceProvider;
+        private readonly IWechatSafe safe;
+
         public static string Event_OnGetWechatUserInfoFromWechatFirstTime = "OnGetWechatUserInfoFromWechatFirstTime";
         public static string Event_OnGetWechatUserInfoFromCustom = "OnGetWechatUserInfoFromCustom";
+
+        public WechatUserCheckAndUpdateEvent(IWechat wechat, IServiceProvider serviceProvider, IWechatSafe safe)
+        {
+            this.wechat = wechat;
+            this.serviceProvider = serviceProvider;
+            this.safe = safe;
+        }
+
         //首次查找
         [EventSubscribe("OnGetWechatUserInfoFromWechatFirstTime")]
         public async System.Threading.Tasks.Task OnGetWechatUserInfoFromWechatFirstTime(EventHandlerExecutingContext context)
@@ -23,7 +37,10 @@ namespace Core.Wechat.EventBus
             var todo = context.Source;
             var data = (WechatUser)todo.Payload;
 
-            await _config.InsertUserToRepo(data);
+            using var scope = serviceProvider.CreateScope();
+            var _config = App.GetService<IWechatConfig>(scope.ServiceProvider);
+            await _config.InsertUserToRepo(data);//直接添加到数据库即可
+            await safe.EndGetWechatUser(data.OpenID);
         }
 
         //比对仓储的数据和微信线上是否一致
@@ -32,7 +49,8 @@ namespace Core.Wechat.EventBus
         {
             var todo = context.Source;
             var data = (WechatUser)todo.Payload;
-
+            using var scope = serviceProvider.CreateScope();
+            var _config = App.GetService<IWechatConfig>(scope.ServiceProvider);
             //从微信查找
             var entity = await wechat.GetUserInfoByOpenID(data.Key,data.OpenID,data.Access_Token);
             if (entity != null)
@@ -45,6 +63,7 @@ namespace Core.Wechat.EventBus
                 }
                 
             }
+            await safe.EndGetWechatUser(data.OpenID);
         }
     }
 }
