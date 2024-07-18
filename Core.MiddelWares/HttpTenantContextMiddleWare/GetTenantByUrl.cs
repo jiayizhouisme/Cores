@@ -18,8 +18,8 @@ namespace Core.MiddelWares.HttpTenantContextMiddleWare
         }
         public async Task<Tenant> Get(HttpContext context)
         {
-            var host = context.Request.Path.Value.Split('/')[1];
-            return await ts.GetTenant(host);
+            var name = context.Request.Path.Value.Split('/')[1];
+            return await ts.GetTenant(name);
         }
     }
 }
