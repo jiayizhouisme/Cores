@@ -1,4 +1,5 @@
-﻿using Core.User.Service;
+﻿using Core.MiddelWares.HttpTenantContextMiddleWare;
+using Core.User.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.MiddelWares.HttpTenantContextMiddleWare
+namespace Core.MiddelWares
 {
 
     public class HttpContextMiddleware
@@ -36,7 +37,7 @@ namespace Core.MiddelWares.HttpTenantContextMiddleWare
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            
+
             context.Request.EnableBuffering();
 
             var request = context.Request;
