@@ -29,8 +29,8 @@ namespace Core.EntityFrameWork
 
         public virtual string GetDatabaseConnectionString()
         {
-
-            if (user.TenantId != null && App.Configuration["ConnectionStrings:UseTenant"] == "yes")
+            var usetenant = App.Configuration["ConnectionStrings:UseTenant"];
+            if (user.TenantId != null && (usetenant != null && usetenant == "yes"))
             {
                 try
                 {
