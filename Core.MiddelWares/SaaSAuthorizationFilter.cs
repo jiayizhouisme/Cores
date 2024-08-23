@@ -19,7 +19,7 @@ namespace Core.MiddelWares
         }
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var tenant_id = context.HttpContext.Request.Headers["Tenant-Id"].ToString();
+            var tenant_id = context.HttpContext.Request.Headers["Tenant_Name"].ToString();
             var realTenant = httpContextUser.RealTenantId;
             if (tenant_id == null ||
                 realTenant.IsNullOrEmpty() ||
