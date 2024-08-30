@@ -16,7 +16,7 @@ namespace Core.MiddelWares
     {
         private readonly RequestDelegate _next;
         private IGetTenantInHttpContext _tenantInHttpContext;
-
+        public static string Key_TenantName = "Tenant_Name";
         /// <summary>
         /// 构造 Http 请求中间件
         /// </summary>
@@ -49,7 +49,7 @@ namespace Core.MiddelWares
                 request.Headers.Append("Origin_Host", request.Host.ToString());
                 request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name + "/", "/"));
                 request.Host = new HostString(tenant.Host);
-                request.Headers.Append("Tenant_Name", tenant.Name);
+                request.Headers.Append(HttpContextMiddleware.Key_TenantName, tenant.Name);
             }
 
             await _next.Invoke(context);
