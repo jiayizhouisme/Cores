@@ -47,7 +47,7 @@ namespace Core.MiddelWares
             if (tenant != null)
             {
                 request.Headers.Append("Origin_Host", request.Host.ToString());
-                request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name, ""));
+                request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name + "/", "/"));
                 request.Host = new HostString(tenant.Host);
                 request.Headers.Append("Tenant_Name", tenant.Name);
             }

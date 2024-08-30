@@ -35,6 +35,10 @@ namespace Core.EntityFrameWork
                 try
                 {
                     var t = this.Tenant;
+                    if (t == null)
+                    {
+                        return defaultConnectString;
+                    }
                     return t.ConnectionString;
                 }
                 catch
