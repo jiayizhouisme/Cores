@@ -2,6 +2,7 @@
 using Core.User.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,14 +48,16 @@ namespace Core.MiddelWares
             if (tenant != null)
             {
                 request.Headers.Append("Origin_Host", request.Host.ToString());
-                if (request.Path.Value.EndsWith("/" + tenant.Name)) {
-                    request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name, "/"));
+                if (_tenantInHttpContext is GetTenantByUrl) {
+                    if (request.Path.Value.EndsWith("/" + tenant.Name))
+                    {
+                        request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name, "/"));
+                    }
+                    else
+                    {
+                        request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name + "/", "/"));
+                    }
                 }
-                else
-                {
-                    request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name + "/", "/"));
-                }
-
                 request.Host = new HostString(tenant.Host);
                 request.Headers.Append(HttpContextMiddleware.Key_TenantName, tenant.Name);
             }
@@ -63,6 +66,13 @@ namespace Core.MiddelWares
             // 响应完成时存入缓存
             context.Response.OnCompleted(() =>
             {
+                StringValues str;
+                request.Headers.TryGetValue("Origin_Host", out str);
+                if (!string.IsNullOrEmpty(str))
+                {
+                    request.Host = new HostString(str.ToString());
+                }
+                
                 return Task.CompletedTask;
             });
         }
