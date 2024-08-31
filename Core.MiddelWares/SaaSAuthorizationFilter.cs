@@ -1,4 +1,5 @@
 ﻿using Core.Auth;
+using Core.HttpTenant;
 using Furion.LinqBuilder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -13,13 +14,15 @@ namespace Core.MiddelWares
     public class SaaSAuthorizationFilter : IAsyncAuthorizationFilter
     {
         private readonly IHttpContextUser httpContextUser;
-        public SaaSAuthorizationFilter(IHttpContextUser httpContextUser)
+        private readonly ITenantGetSetor tenantGetSetor;
+        public SaaSAuthorizationFilter(IHttpContextUser httpContextUser, ITenantGetSetor tenantGetSetor)
         {
             this.httpContextUser = httpContextUser;
+            this.tenantGetSetor = tenantGetSetor;
         }
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var tenant_id = context.HttpContext.Request.Headers[HttpContextMiddleware.Key_TenantName].ToString();
+            var tenant_id = tenantGetSetor.Get();
             var realTenant = httpContextUser.RealTenantId;
             if (tenant_id == null ||
                 realTenant.IsNullOrEmpty() ||

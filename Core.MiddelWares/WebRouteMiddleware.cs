@@ -1,4 +1,5 @@
 ﻿using Core.Auth;
+using Core.HttpTenant;
 using Core.Services.ServiceFactory;
 using Core.User.Entity;
 using Core.User.Service;
@@ -16,18 +17,20 @@ namespace Core.MiddelWares
     {
         private readonly RequestDelegate _next;
         private readonly IServiceScopeFactory serviceFactory;
-       
+        private readonly ITenantGetSetor tenantGetSetor;
+
         /// <summary>
         /// 构造 Http 请求中间件
         /// </summary>
         /// <param name="next"></param>
         /// <param name="loggerFactory"></param>
         /// <param name="cacheService"></param>
-        public WebRouteMiddleware(RequestDelegate next, IServiceScopeFactory serviceFactory)
+        public WebRouteMiddleware(RequestDelegate next, IServiceScopeFactory serviceFactory,
+            ITenantGetSetor tenantGetSetor)
         {
             _next = next;
             this.serviceFactory = serviceFactory;
-
+            this.tenantGetSetor = tenantGetSetor;
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Core.MiddelWares
             var path1 = request.Path.Value;
             if (!path1.StartsWith("/api"))
             {
-                var tenant_name = request.Headers[HttpContextMiddleware.Key_TenantName].ToString();
+                var tenant_name = tenantGetSetor.Get();
                 if (tenant_name != null && !string.IsNullOrEmpty(tenant_name))
                 {
                     using (var scope = serviceFactory.CreateScope())

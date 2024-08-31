@@ -1,4 +1,5 @@
-﻿using Core.HttpTenant.HttpTenantContext;
+﻿using Core.HttpTenant;
+using Core.HttpTenant.HttpTenantContext;
 using Core.User.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -17,17 +18,21 @@ namespace Core.MiddelWares
     {
         private readonly RequestDelegate _next;
         private IGetTenantInHttpContext _tenantInHttpContext;
-        public static string Key_TenantName = "Tenant_Name";
+        private ITenantGetSetor tenantGetSetor;
         /// <summary>
         /// 构造 Http 请求中间件
         /// </summary>
         /// <param name="next"></param>
         /// <param name="loggerFactory"></param>
         /// <param name="cacheService"></param>
-        public HttpContextMiddleware(RequestDelegate next, IGetTenantInHttpContext _tenantInHttpContext)
+        public HttpContextMiddleware(
+            RequestDelegate next, 
+            IGetTenantInHttpContext _tenantInHttpContext,
+            ITenantGetSetor tenantGetSetor)
         {
             _next = next;
             this._tenantInHttpContext = _tenantInHttpContext;
+            this.tenantGetSetor = tenantGetSetor;
         }
 
         /// <summary>
@@ -47,7 +52,6 @@ namespace Core.MiddelWares
 
             if (tenant != null)
             {
-                //request.Headers.Append("Origin_Host", request.Host.ToString());
                 if (_tenantInHttpContext is GetTenantByUrl) {
                     if (request.Path.Value.EndsWith("/" + tenant.Name))
                     {
@@ -58,8 +62,7 @@ namespace Core.MiddelWares
                         request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name + "/", "/"));
                     }
                 }
-                //request.Host = new HostString(tenant.Host);
-                request.Headers.Append(HttpContextMiddleware.Key_TenantName, tenant.Name);
+                tenantGetSetor.Set(tenant.Name);
             }
 
             await _next.Invoke(context);

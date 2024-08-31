@@ -1,4 +1,5 @@
 ﻿using Core.Auth;
+using Core.HttpTenant;
 using Core.HttpTenant.HttpTenantContext;
 using Core.MiddelWares;
 using Furion;
@@ -18,10 +19,11 @@ namespace Core.EntityFrameWork
     public abstract class DefaultDbContext<T> : AppDbContext<T>, IMultiTenantOnDatabase where T : DbContext
     {
         protected string defaultConnectString;
+        private readonly ITenantGetSetor tenantGetSetor;
 
-        public DefaultDbContext(DbContextOptions<T> options) : base(options)
+        public DefaultDbContext(DbContextOptions<T> options, ITenantGetSetor tenantGetSetor) : base(options)
         {
-
+            this.tenantGetSetor = tenantGetSetor;
         }
 
         protected void SetConnectString(string connectString)
@@ -31,7 +33,7 @@ namespace Core.EntityFrameWork
 
         public virtual string GetDatabaseConnectionString()
         {
-            var tenant_name = App.HttpContext.Request.Headers[HttpContextMiddleware.Key_TenantName];
+            var tenant_name = tenantGetSetor.Get();
             var usetenant = App.Configuration["ConnectionStrings:UseTenant"];
             if (!string.IsNullOrEmpty(tenant_name) && (usetenant != null && usetenant == "yes"))
             {

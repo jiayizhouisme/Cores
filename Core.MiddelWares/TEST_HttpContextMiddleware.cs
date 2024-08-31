@@ -17,7 +17,6 @@ namespace Core.HttpTenant.Service
     {
         private readonly RequestDelegate _next;
         private IGetTenantInHttpContext _tenantInHttpContext;
-        public static string Key_TenantName = "Tenant_Name";
         /// <summary>
         /// 构造 Http 请求中间件
         /// </summary>
