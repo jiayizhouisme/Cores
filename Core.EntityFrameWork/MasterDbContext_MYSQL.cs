@@ -11,7 +11,7 @@ namespace Core.EntityFrameWork
 {
     public class MasterDbContext_MYSQL<T> : DefaultDbContext<T> where T : DbContext
     {
-        public MasterDbContext_MYSQL(DbContextOptions<T> options, IHttpContextUser user) : base(options, user)
+        public MasterDbContext_MYSQL(DbContextOptions<T> options) : base(options)
         {
             this.SetConnectString(App.Configuration["ConnectionStrings:SqlConnection"]);
         }
@@ -30,7 +30,7 @@ namespace Core.EntityFrameWork
 
     public class MasterDbContext_MYSQL : DefaultDbContext<MasterDbContext_MYSQL>
     {
-        public MasterDbContext_MYSQL(DbContextOptions<MasterDbContext_MYSQL> options, IHttpContextUser user) : base(options, user)
+        public MasterDbContext_MYSQL(DbContextOptions<MasterDbContext_MYSQL> options) : base(options)
         {
             this.SetConnectString(App.Configuration["ConnectionStrings:SqlConnection"]);
         }

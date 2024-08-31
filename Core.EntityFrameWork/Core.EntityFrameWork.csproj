@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core.Auth\Core.Auth.csproj" />
+    <ProjectReference Include="..\Core.MiddelWares\Core.MiddelWares.csproj" />
     <ProjectReference Include="..\Core.Tenant\Core.Tenant.csproj" />
   </ItemGroup>
 
