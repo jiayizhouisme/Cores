@@ -1,5 +1,4 @@
 ﻿using Core.Auth;
-using Core.MiddelWares.HttpTenantContextMiddleWare;
 using Core.Services.ServiceFactory;
 using Core.User.Entity;
 using Core.User.Service;

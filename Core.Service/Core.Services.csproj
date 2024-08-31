@@ -15,4 +15,8 @@
     <PackageReference Include="Furion.Extras.DatabaseAccessor.SqlSugar" Version="4.9.1.28" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Tenant\Core.Tenant.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Core.Auth;
+using Core.HttpTenant.HttpTenantContext;
 using Furion;
 using Furion.DatabaseAccessor;
 using Furion.DependencyInjection;
@@ -34,12 +35,30 @@ namespace Core.EntityFrameWork
             {
                 try
                 {
-                    var t = this.Tenant;
-                    if (t == null)
+                    IMemoryCache _memoryCache = App.GetService<IMemoryCache>();
+                    var tenantCachedKey = $"MULTI_TENANT:{user.TenantId}";
+                    var cache_result = _memoryCache.Get<string>(tenantCachedKey);
+                    string connstr = "";
+                    if (cache_result == null)
                     {
-                        return defaultConnectString;
+                        var service = App.GetService<IGetTenantInHttpContext>();
+                        var t = service.Get(App.HttpContext).Result;
+                        if (t != null)
+                        {
+                            connstr = t.ConnectionString;
+                            _memoryCache.Set(tenantCachedKey, connstr);
+                        }
+                        else
+                        {
+                            return defaultConnectString;
+                        }
                     }
-                    return t.ConnectionString;
+                    else
+                    {
+                        connstr = cache_result;
+                    }
+                    
+                    return connstr;
                 }
                 catch
                 {

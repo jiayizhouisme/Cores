@@ -1,5 +1,5 @@
 ﻿using Core.Auth;
-using Core.User.Service;
+using Core.HttpTenant.Service;
 using Furion;
 using Furion.DatabaseAccessor;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.MiddelWares.HttpTenantContextMiddleWare
+namespace Core.HttpTenant.HttpTenantContext
 {
     public class GetTenantByUser : IGetTenantInHttpContext
     {
@@ -26,7 +26,12 @@ namespace Core.MiddelWares.HttpTenantContextMiddleWare
         {
             using var scope = serviceProvider.CreateScope();
             var user = App.GetService<IHttpContextUser>(scope.ServiceProvider);
-            return await ts.GetTenant(user.RealTenantId);
+            return await Get(user.RealTenantId);
+        }
+
+        public async Task<Tenant> Get(string key)
+        {
+            return await ts.GetTenant(key);
         }
     }
 }

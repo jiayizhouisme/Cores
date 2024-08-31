@@ -1,7 +1,8 @@
-﻿using Core.User.Service;
-using Furion;
+﻿using Core.HttpTenant.HttpTenantContext;
+using Core.User.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,22 +10,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.MiddelWares
+namespace Core.HttpTenant.Service
 {
 
-    public class SubSiteMiddleWare
+    public class TEST_HttpContextMiddleware
     {
         private readonly RequestDelegate _next;
-
+        private IGetTenantInHttpContext _tenantInHttpContext;
+        public static string Key_TenantName = "Tenant_Name";
         /// <summary>
         /// 构造 Http 请求中间件
         /// </summary>
         /// <param name="next"></param>
         /// <param name="loggerFactory"></param>
         /// <param name="cacheService"></param>
-        public SubSiteMiddleWare(RequestDelegate next)
+        public TEST_HttpContextMiddleware(RequestDelegate next, IGetTenantInHttpContext _tenantInHttpContext)
         {
             _next = next;
+            this._tenantInHttpContext = _tenantInHttpContext;
         }
 
         /// <summary>
@@ -40,15 +43,7 @@ namespace Core.MiddelWares
 
             var request = context.Request;
 
-            
-            var value = request.Path.Value;
-            var subPath = App.Configuration["ServerConfig:SubSite:SubPath"];
-            if (value.StartsWith(subPath))
-            {
-                
-                request.Path = new PathString(request.Path.Value.Replace(subPath,""));
-            }
-            
+
             await _next.Invoke(context);
             // 响应完成时存入缓存
             context.Response.OnCompleted(() =>

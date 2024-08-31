@@ -1,4 +1,4 @@
-﻿using Core.User.Service;
+﻿using Core.HttpTenant.Service;
 using Furion.DatabaseAccessor;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.MiddelWares.HttpTenantContextMiddleWare
+namespace Core.HttpTenant.HttpTenantContext
 {
     public class GetTenantByHost : IGetTenantInHttpContext
     {
@@ -19,7 +19,12 @@ namespace Core.MiddelWares.HttpTenantContextMiddleWare
         public async Task<Tenant> Get(HttpContext context)
         {
             var host = context.Request.Host.ToString();
-            return await ts.GetTenantByHost(host);
+            return await Get(host);
+        }
+
+        public async Task<Tenant> Get(string key)
+        {
+            return await ts.GetTenantByHost(key);
         }
     }
 }

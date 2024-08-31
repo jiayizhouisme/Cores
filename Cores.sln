@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.SignalR", "Core.Signal
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.User", "Core.User\Core.User.csproj", "{3A6750E4-EAEE-4991-A534-8692586F7ABB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tenant", "Core.Tenant\Core.Tenant.csproj", "{B62C43B1-140F-4E81-8CB7-435A52C69119}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{3A6750E4-EAEE-4991-A534-8692586F7ABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A6750E4-EAEE-4991-A534-8692586F7ABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A6750E4-EAEE-4991-A534-8692586F7ABB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B62C43B1-140F-4E81-8CB7-435A52C69119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B62C43B1-140F-4E81-8CB7-435A52C69119}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B62C43B1-140F-4E81-8CB7-435A52C69119}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B62C43B1-140F-4E81-8CB7-435A52C69119}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

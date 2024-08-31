@@ -1,4 +1,6 @@
-﻿using Core.Services;
+﻿using Core.HttpTenant.HttpTenantContext;
+using Core.Services;
+using Furion;
 using Furion.DatabaseAccessor;
 using Furion.DependencyInjection;
 using Microsoft.Extensions.Caching.Memory;
@@ -47,9 +49,13 @@ namespace Core.Services.ServiceFactory
             string connstr = "";
             if (cache_result == null)
             {
-                var respository = Db.GetRepository<Tenant, MultiTenantDbContextLocator>(provider);
-                connstr = respository.Where(a => a.Host == id).Select(a => a.ConnectionString).FirstOrDefault();
-                _memoryCache.Set(tenantCachedKey, connstr);
+                var service = App.GetService<IGetTenantInHttpContext>();
+                var t = service.Get(id).Result;
+                if (t != null)
+                {
+                    connstr = t.ConnectionString;
+                    _memoryCache.Set(tenantCachedKey, connstr);
+                }
             }
             else
             {
