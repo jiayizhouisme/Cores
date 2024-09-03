@@ -43,6 +43,7 @@ namespace Core.MiddelWares
         {
             var request = context.Request;
             var path1 = request.Path.Value;
+
             if (!path1.StartsWith("/api"))
             {
                 var tenant_name = tenantGetSetor.Get();
@@ -64,11 +65,6 @@ namespace Core.MiddelWares
             }
             
             await _next.Invoke(context);
-            // 响应完成时存入缓存
-            context.Response.OnCompleted(() =>
-            {
-                return Task.CompletedTask;
-            });
         }
     }
 }

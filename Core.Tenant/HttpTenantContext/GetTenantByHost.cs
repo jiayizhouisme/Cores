@@ -26,5 +26,10 @@ namespace Core.HttpTenant.HttpTenantContext
         {
             return await ts.GetTenantByHost(key);
         }
+
+        public void Set(HttpContext context, string value)
+        {
+
+        }
     }
 }

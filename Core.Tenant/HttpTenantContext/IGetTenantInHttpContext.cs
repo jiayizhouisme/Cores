@@ -13,5 +13,7 @@ namespace Core.HttpTenant.HttpTenantContext
         public Task<Tenant> Get(HttpContext context);
 
         public Task<Tenant> Get(string key);
+
+        public void Set(HttpContext context, string value);
     }
 }

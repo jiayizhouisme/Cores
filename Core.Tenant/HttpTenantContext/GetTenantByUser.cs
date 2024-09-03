@@ -33,5 +33,10 @@ namespace Core.HttpTenant.HttpTenantContext
         {
             return await ts.GetTenant(key);
         }
+
+        public void Set(HttpContext context, string value)
+        {
+
+        }
     }
 }

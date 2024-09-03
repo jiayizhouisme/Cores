@@ -43,34 +43,17 @@ namespace Core.MiddelWares
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-
-            context.Request.EnableBuffering();
-
             var request = context.Request;
 
             var tenant = await _tenantInHttpContext.Get(context);
 
             if (tenant != null)
             {
-                if (_tenantInHttpContext is GetTenantByUrl) {
-                    if (request.Path.Value.EndsWith("/" + tenant.Name))
-                    {
-                        request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name, "/"));
-                    }
-                    else
-                    {
-                        request.Path = new PathString(request.Path.Value.Replace("/" + tenant.Name + "/", "/"));
-                    }
-                }
+                _tenantInHttpContext.Set(context,tenant.Name);
                 tenantGetSetor.Set(tenant.Name);
             }
 
             await _next.Invoke(context);
-            // 响应完成时存入缓存
-            context.Response.OnCompleted(() =>
-            {
-                return Task.CompletedTask;
-            });
         }
     }
 }

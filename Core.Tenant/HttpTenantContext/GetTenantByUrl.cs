@@ -26,5 +26,18 @@ namespace Core.HttpTenant.HttpTenantContext
         {
             return await ts.GetTenant(key);
         }
+
+        public void Set(HttpContext context,string value)
+        {
+            var request = context.Request;
+            if (request.Path.Value.EndsWith("/" + value))
+            {
+                request.Path = new PathString(request.Path.Value.Replace("/" + value, "/"));
+            }
+            else
+            {
+                request.Path = new PathString(request.Path.Value.Replace("/" + value + "/", "/"));
+            }
+        }
     }
 }
