@@ -23,7 +23,7 @@ namespace Core.MiddelWares
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var tenant_id = tenantGetSetor.Get();
-            var realTenant = httpContextUser.RealTenantId;
+            var realTenant = httpContextUser.TenantId;
             if (tenant_id == null ||
                 realTenant.IsNullOrEmpty() ||
                 tenant_id != realTenant)

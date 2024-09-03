@@ -43,9 +43,6 @@ namespace Core.MiddelWares
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-
-            context.Request.EnableBuffering();
-
             var request = context.Request;
 
             var tenant = await _tenantInHttpContext.Get(context);
@@ -66,11 +63,6 @@ namespace Core.MiddelWares
             }
 
             await _next.Invoke(context);
-            // 响应完成时存入缓存
-            context.Response.OnCompleted(() =>
-            {
-                return Task.CompletedTask;
-            });
         }
     }
 }

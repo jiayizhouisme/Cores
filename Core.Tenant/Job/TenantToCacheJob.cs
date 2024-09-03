@@ -1,5 +1,4 @@
 ﻿using Core.Cache;
-using Core.Services.ServiceFactory;
 using Furion.DatabaseAccessor;
 using Furion.DependencyInjection;
 using Furion.Schedule;
@@ -7,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Core.User.JobTask
+namespace Core.TenantJob
 {
     /// <summary>
     /// 每天自动更新最新的库存
