@@ -1,8 +1,10 @@
-﻿using Core.Services;
+﻿using Core.HttpTenant;
+using Core.Services;
 using Core.User.Entity;
 using Furion.DatabaseAccessor;
 using Furion.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,34 @@ namespace Core.User.Service
 {
     public class WebRouteConfigService : BaseService<WebRouteConfig, MasterDbContextLocator>, IWebRouteConfigService, ITransient
     {
-        public WebRouteConfigService(IRepository<WebRouteConfig, MasterDbContextLocator> _dal) {
+        private readonly ITenantGetSetor tenantGetSetor;
+        private readonly IMemoryCache _cache;
+        public WebRouteConfigService(
+            IRepository<WebRouteConfig, MasterDbContextLocator> _dal,
+            ITenantGetSetor tenantGetSetor,
+            IMemoryCache _cache) {
             this._dal = _dal;
+            this.tenantGetSetor = tenantGetSetor;
+            this._cache = _cache;
         }
         public async Task<WebRouteConfig> GetConfig(string keyPath)
         {
-           return await GetQueryableNt(a => a.keyPath == keyPath).FirstOrDefaultAsync();
+            var configs = await GetConfigs();
+            return configs.Where(a => a.keyPath == keyPath).FirstOrDefault();
         }
 
         public async Task<ICollection<WebRouteConfig>> GetConfigs()
         {
-            return await this.GetQueryableNt().ToListAsync();
+            var tenant_name = tenantGetSetor.Get();
+            var key = "WebRoutePaths:" + tenant_name;
+            var paths = _cache.Get<List<WebRouteConfig>>(key);
+            if (paths != null)
+            {
+                return paths;
+            }
+            var list = await this.GetQueryableNt().ToListAsync();
+            _cache.Set(key, list);
+            return list;
         }
     }
 }
