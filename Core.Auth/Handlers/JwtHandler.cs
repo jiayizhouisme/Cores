@@ -13,7 +13,7 @@ namespace Core.Auth.Handler
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override async Task HandleAsync(AuthorizationHandlerContext context)
+        public override async Task HandleAsync(AuthorizationHandlerContext context, DefaultHttpContext httpContext)
         {
             // 自动刷新 token
 
