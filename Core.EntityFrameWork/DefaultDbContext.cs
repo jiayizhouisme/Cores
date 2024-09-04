@@ -23,6 +23,7 @@ namespace Core.EntityFrameWork
 
         public DefaultDbContext(DbContextOptions<T> options, ITenantGetSetor tenantGetSetor) : base(options)
         {
+            this.InsertOrUpdateIgnoreNullValues = true;
             this.tenantGetSetor = tenantGetSetor;
         }
 
