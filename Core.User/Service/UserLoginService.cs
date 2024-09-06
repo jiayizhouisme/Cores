@@ -53,6 +53,7 @@ namespace Core.User.Service
                     await this._dal.UpdateNowAsync(user);
                     ret.message = "密码修改成功" ;
                     ret.code = 1;
+                    return ret;
                 }
                 ret.message = "旧密码与原密码不一致";
                 ret.code = 0;
