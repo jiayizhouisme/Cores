@@ -1,5 +1,6 @@
 ﻿using Core.Services;
 using Core.User.Entity;
+using Core.User.Model;
 using Furion.DatabaseAccessor;
 using Furion.DataEncryption.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,27 @@ namespace Core.User.Service
                 return _user;
             }
             return null;
+        }
+
+        public async Task<ChangePasswordRetModel> UpdatePassword(string userName, ChangePasswordModel model)
+        {
+            ChangePasswordRetModel ret = new ChangePasswordRetModel {code = 0 };
+            var oldPassword = model.oldPassword.ToMD5Encrypt();
+            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(oldPassword) && !string.IsNullOrEmpty(model.newPassword))
+            {
+                var user = await this._dal.AsQueryable(a => a.username == userName && a.password == oldPassword).FirstOrDefaultAsync();
+                if (user != null)
+                {
+                    user.password = model.newPassword.ToMD5Encrypt();
+                    await this._dal.UpdateNowAsync(user);
+                    ret.message = "密码修改成功" ;
+                    ret.code = 1;
+                }
+                ret.message = "旧密码与原密码不一致";
+                ret.code = 0;
+            }
+            return ret;
+            
         }
     }
 }
