@@ -9,7 +9,7 @@ namespace Core.Utill.UniqueCode
         {
             this.codeGenerator = codeGenerator;
         }
-        public async Task<long> Generate()
+        public async Task<long> Generate(string prefix = null)
         {
             DateTime currentTime = DateTime.Now;
             string originDateStr = currentTime.ToString("yyMMdd");
@@ -17,9 +17,16 @@ namespace Core.Utill.UniqueCode
 
             string yyMMddSecond = originDateStr + differSecond.ToString().PadLeft(5, '0');
             var parsed = long.Parse(yyMMddSecond);
-
-            var res = await codeGenerator.Generate("Id");
-
+            long res = -1;
+            if (string.IsNullOrEmpty(prefix))
+            {
+                res = await codeGenerator.Generate("Id");
+            }
+            else
+            {
+                res = await codeGenerator.Generate(prefix + ":Id");
+            }
+            
             //生成订单编号
             string orderNo = parsed.ToString() + res.ToString().PadLeft(4, '0');
             return long.Parse(orderNo);

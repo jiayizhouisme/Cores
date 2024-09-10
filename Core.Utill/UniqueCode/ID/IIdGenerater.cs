@@ -8,6 +8,6 @@ namespace Core.Utill.UniqueCode
 {
     public interface IIdGenerater<T>
     {
-        Task<T> Generate();
+        Task<T> Generate(string prefix = null);
     }
 }

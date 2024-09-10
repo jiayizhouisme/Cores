@@ -62,7 +62,7 @@ namespace Core.EntityFrameWork
                     {
                         connstr = cache_result;
                     }
-
+                    
                     return connstr;
                 }
                 catch
