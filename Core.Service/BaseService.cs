@@ -25,33 +25,33 @@ namespace Core.Services
             await _dal.InsertAsync(entities);
         }
 
-        public async Task<T> AddNow(T entity)
+        public virtual async Task<T> AddNow(T entity)
         {
             var result = await _dal.InsertNowAsync(entity);
             return result.Entity;
         }
 
-        public async Task AddNow(ICollection<T> entities)
+        public virtual async Task AddNow(ICollection<T> entities)
         {
             await _dal.InsertNowAsync(entities);
         }
 
-        public async Task Delete(T entity)
+        public virtual async Task Delete(T entity)
         {
             var result = await _dal.DeleteAsync(entity);
         }
 
-        public async Task Delete(ICollection<T> entity)
+        public virtual async Task Delete(ICollection<T> entity)
         {
             await _dal.DeleteAsync(entity);
         }
 
-        public async Task DeleteNow(T entity)
+        public virtual async Task DeleteNow(T entity)
         {
             await _dal.DeleteNowAsync(entity);
         }
 
-        public async Task DeleteNow(ICollection<T> entity)
+        public virtual async Task DeleteNow(ICollection<T> entity)
         {
             await _dal.DeleteNowAsync(entity);
         }
@@ -86,22 +86,22 @@ namespace Core.Services
 
 
 
-        public async Task Update(T entity)
+        public virtual async Task Update(T entity)
         {
             await _dal.UpdateAsync(entity);
         }
 
-        public async Task Update(ICollection<T> entity)
+        public virtual async Task Update(ICollection<T> entity)
         {
             await _dal.UpdateAsync(entity);
         }
 
-        public async Task UpdateNow(T entity)
+        public virtual async Task UpdateNow(T entity)
         {
             await _dal.UpdateNowAsync(entity);
         }
 
-        public async Task UpdateNow(ICollection<T> entity)
+        public virtual async Task UpdateNow(ICollection<T> entity)
         {
             await _dal.UpdateNowAsync(entity);
         }
