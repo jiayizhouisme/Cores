@@ -131,6 +131,12 @@ namespace Core.Services
         /// <param name="predicate"></param>
         /// <returns></returns>
         public Task SaveChangeNow();
+        /// <summary>
+        /// 获取当前service租户信息
+        /// </summary>
+        /// <returns></returns>
+        public string GetTenant();
+        public void SetTenant(string tenantId);
 
     }
 }

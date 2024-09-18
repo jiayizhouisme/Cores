@@ -27,6 +27,7 @@ namespace Core.Services.ServiceFactory
             {
                 var _ret = (IBaseService<T1>)ret;
                 _ret.SetDbConnectString(connstr);
+                _ret.SetTenant(id);
             }
             return ret;
         }
@@ -37,6 +38,7 @@ namespace Core.Services.ServiceFactory
             if (!string.IsNullOrEmpty(connstr))
             {
                 service.SetDbConnectString(connstr);
+                service.SetTenant(id);
             }
             return (T)service;
         }

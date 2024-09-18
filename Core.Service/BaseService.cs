@@ -12,6 +12,7 @@ namespace Core.Services
     public class BaseService<T,DbLocator> : IBaseService<T> where T : class, IPrivateEntity, new() where DbLocator : class,IDbContextLocator
     {
         protected IRepository<T, DbLocator> _dal;
+        private string tenantId { get; set; }
         private string _connStr;
 
         public async Task<T> Add(T entity)
@@ -121,6 +122,16 @@ namespace Core.Services
         public async Task SaveChangeNow()
         {
             await this._dal.SaveNowAsync();
+        }
+
+        public string GetTenant()
+        {
+            return tenantId;
+        }
+
+        public void SetTenant(string tenantId)
+        {
+            this.tenantId = tenantId;
         }
     }
 }
