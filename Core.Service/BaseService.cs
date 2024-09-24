@@ -13,7 +13,6 @@ namespace Core.Services
     {
         protected IRepository<T, DbLocator> _dal;
         private string tenantId { get; set; }
-        private string _connStr;
 
         public async Task<T> Add(T entity)
         {
@@ -85,8 +84,6 @@ namespace Core.Services
             return await _dal.Where(predicate).AsNoTracking().ToListAsync();
         }
 
-
-
         public virtual async Task Update(T entity)
         {
             await _dal.UpdateAsync(entity);
@@ -109,7 +106,6 @@ namespace Core.Services
 
         public IBaseService<T> SetDbConnectString(string connStr)
         {
-            this._connStr = connStr;
             _dal.ChangeDatabase(connStr);
             return this;
         }
