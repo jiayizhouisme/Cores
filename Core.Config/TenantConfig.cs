@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.EntityFrameWork.Config
+namespace Core.Config
 {
     public static class TenantConfig
     {

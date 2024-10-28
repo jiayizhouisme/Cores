@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Core.User.Service
 {
-    public class WebRouteConfigService : BaseService<WebRouteConfig, MasterDbContextLocator>, IWebRouteConfigService, ITransient
+    public class WebRouteConfigService : BaseService<WebRouteConfig, MasterDbContextLocator>, IWebRouteConfigService
     {
         private readonly ITenantGetSetor tenantGetSetor;
         private readonly IMemoryCache _cache;

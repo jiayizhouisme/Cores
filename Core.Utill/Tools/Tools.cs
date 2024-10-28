@@ -100,5 +100,12 @@ namespace Core.Utill.Tools
             return "";
         }
         #endregion
+
+        public static byte[] hexStringToByte(string hexStr,char split = ' ')
+        {
+            var command = hexStr.Split(split).Select(temp => "0x" + temp).Select(temp => (byte)Convert.ToInt32(temp, 16))
+                .ToArray();
+            return command;
+        }
     }
 }

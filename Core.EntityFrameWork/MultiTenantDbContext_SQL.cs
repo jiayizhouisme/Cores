@@ -1,4 +1,5 @@
-﻿using Furion;
+﻿using Core.Config;
+using Furion;
 using Furion.DatabaseAccessor;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,10 +19,10 @@ namespace Core.EntityFrameWork
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connStr = App.Configuration["ConnectionStrings:SqlConnection"];
+            var connStr = Configration.DefaultSqlConnectionString;
             optionsBuilder.UseSqlServer(connStr, options =>
             {
-                options.MigrationsAssembly(App.Configuration["ConnectionStrings:Migrations"]);
+                options.MigrationsAssembly(Configration.DefaultSqlMigrations);
             });
             base.OnConfiguring(optionsBuilder);
         }

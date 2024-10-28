@@ -1,4 +1,5 @@
 ﻿using Core.Auth;
+using Core.Config;
 using Core.HttpTenant;
 using Furion;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace Core.EntityFrameWork
     {
         public MasterDbContext_SQL(DbContextOptions<T> options, ITenantGetSetor tenantGetSetor) : base(options, tenantGetSetor)
         {
-            this.SetConnectString(App.Configuration["ConnectionStrings:SqlConnection"]);
+            this.SetConnectString(Configration.DefaultSqlConnectionString);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -22,7 +23,7 @@ namespace Core.EntityFrameWork
             var connStr = GetDatabaseConnectionString();
             optionsBuilder.UseSqlServer(connStr, options =>
             {
-                options.MigrationsAssembly(App.Configuration["ConnectionStrings:Migrations"]);
+                options.MigrationsAssembly(Configration.DefaultSqlMigrations);
             });
             base.OnConfiguring(optionsBuilder);
         }
@@ -32,7 +33,7 @@ namespace Core.EntityFrameWork
     {
         public MasterDbContext_SQL(DbContextOptions<MasterDbContext_SQL> options, ITenantGetSetor tenantGetSetor) : base(options, tenantGetSetor)
         {
-            this.SetConnectString(App.Configuration["ConnectionStrings:SqlConnection"]);
+            this.SetConnectString(Configration.DefaultSqlConnectionString);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -40,7 +41,7 @@ namespace Core.EntityFrameWork
             var connStr = GetDatabaseConnectionString();
             optionsBuilder.UseSqlServer(connStr, options =>
             {
-                options.MigrationsAssembly(App.Configuration["ConnectionStrings:Migrations"]);
+                options.MigrationsAssembly(Configration.DefaultSqlMigrations);
             });
             base.OnConfiguring(optionsBuilder);
         }

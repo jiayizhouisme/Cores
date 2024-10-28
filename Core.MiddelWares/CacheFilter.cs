@@ -1,5 +1,8 @@
 ﻿using Core.Cache;
+using Core.Config;
+using Core.HttpTenant;
 using Furion.DataEncryption.Extensions;
+using Furion.LinqBuilder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -10,10 +13,11 @@ namespace Core.MiddelWares
         protected readonly ICacheOperation _cache;
         protected string suffixed;
         public const int _expireTime = 3000;
-
-        public CacheFilter(ICacheOperation _cache)
+        public readonly ITenantGetSetor tenantGetSetor;
+        public CacheFilter(ICacheOperation _cache, ITenantGetSetor tenantGetSetor)
         {
             this._cache = _cache;
+            this.tenantGetSetor = tenantGetSetor;
         }
 
         protected virtual async Task SetCache(ResourceExecutedContext context, string key)
@@ -29,7 +33,15 @@ namespace Core.MiddelWares
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
-            string path = context.HttpContext.Request.Host + context.HttpContext.Request.Path +
+            var type = Configration.tenantConfigType;
+
+            string host = context.HttpContext.Request.Host.ToString();
+            string tenant_name = tenantGetSetor.Get();
+            if (type != TenantConfigTypes.ByHost && !tenant_name.IsNullOrEmpty())
+            {
+                host = host + "/" + tenant_name;
+            }
+            string path = host + context.HttpContext.Request.Path +
                 context.HttpContext.Request.QueryString.Value + suffixed;
             var key = path.ToMD5Encrypt(false, true);
             var result = await SetResult(context, key);

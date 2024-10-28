@@ -1,4 +1,5 @@
 ﻿using Core.Auth;
+using Core.Config;
 using Core.HttpTenant;
 using Core.HttpTenant.HttpTenantContext;
 using Core.MiddelWares;
@@ -35,8 +36,8 @@ namespace Core.EntityFrameWork
         public virtual string GetDatabaseConnectionString()
         {
             var tenant_name = tenantGetSetor.Get();
-            var usetenant = App.Configuration["ConnectionStrings:UseTenant"];
-            if (!string.IsNullOrEmpty(tenant_name) && (usetenant != null && usetenant == "yes"))
+            var usetenant = Config.Configration.UseTenant;
+            if (!string.IsNullOrEmpty(tenant_name) && (usetenant != null && usetenant == true))
             {
                 try
                 {
