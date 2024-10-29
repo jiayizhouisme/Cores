@@ -35,7 +35,7 @@ namespace Core.Config
             }
 
             redisConnectionString = App.Configuration["RedisConfig:ConnectionString"];
-            CachePrefix = App.Configuration["ServerConfig:CachePrefix"];
+            CachePrefix = App.Configuration["ServerConfig:CachePrefix"] + ":";
             ClusterId = App.Configuration["ServerConfig:ClusterId"];
             DefaultSqlConnectionString = App.Configuration["ConnectionStrings:SqlConnection"];
             DefaultSqlMigrations = App.Configuration["ConnectionStrings:Migrations"];

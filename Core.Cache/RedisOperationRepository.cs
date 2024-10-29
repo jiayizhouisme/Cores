@@ -23,7 +23,7 @@ namespace Core.Cache
             _logger = logger;
             _redis = redis;
             _database = redis.GetDatabase();
-            this.keyprefix = Configration.CachePrefix + ":";
+            this.keyprefix = Configration.CachePrefix;
         }
         private IServer GetServer()
         {
