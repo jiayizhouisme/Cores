@@ -2,15 +2,10 @@
 using Core.HttpTenant.HttpTenantContext;
 using Core.HttpTenant.Service;
 using Core.HttpTenant;
-using Furion.Schedule;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Core.Config;
 
-namespace Core.Config
+namespace Core.TenantConfig
 {
     public static class TenantConfig
     {
@@ -39,11 +34,4 @@ namespace Core.Config
             return services;
         }
     }
-    public enum TenantConfigTypes
-    {
-        ByUrl,
-        ByUser,
-        ByHost
-    }
-
 }

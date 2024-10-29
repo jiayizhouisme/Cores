@@ -1,4 +1,5 @@
-﻿using Furion;
+﻿using Core.Config;
+using Furion;
 using Furion.JsonSerialization;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
@@ -22,7 +23,7 @@ namespace Core.Cache
             _logger = logger;
             _redis = redis;
             _database = redis.GetDatabase();
-            this.keyprefix = App.Configuration["ServerConfig:CachePrefix"] + ":";
+            this.keyprefix = Configration.CachePrefix + ":";
         }
         private IServer GetServer()
         {

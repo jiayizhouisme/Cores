@@ -33,8 +33,12 @@ namespace Core.MiddelWares
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
-            var type = Configration.tenantConfigType;
+            if (Configration.UseCache == false)
+            {
+                await next();
+            }
 
+            var type = Configration.tenantConfigType;
             string host = context.HttpContext.Request.Host.ToString();
             string tenant_name = tenantGetSetor.Get();
             if (type != TenantConfigTypes.ByHost && !tenant_name.IsNullOrEmpty())

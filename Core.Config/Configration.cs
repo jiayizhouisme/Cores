@@ -41,4 +41,10 @@ namespace Core.Config
             DefaultSqlMigrations = App.Configuration["ConnectionStrings:Migrations"];
         }
     }
+    public enum TenantConfigTypes
+    {
+        ByUrl,
+        ByUser,
+        ByHost
+    }
 }
