@@ -45,6 +45,7 @@ namespace Core.Config
     {
         ByUrl,
         ByUser,
-        ByHost
+        ByHost,
+        ByDefault
     }
 }

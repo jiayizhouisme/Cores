@@ -30,6 +30,11 @@ namespace Core.TenantConfig
                 services.AddScoped<IHttpContextUser, JwtUserContext>();
                 services.AddSingleton<ITenantGetSetor, TenantHttpContextHost>();
                 services.AddSingleton<IGetTenantInHttpContext, GetTenantByHost>();
+            }else if (type == TenantConfigTypes.ByDefault)
+            {
+                services.AddScoped<IHttpContextUser, JwtUserContext_Real>();
+                services.AddSingleton<ITenantGetSetor, TenantHttpContextGS>();
+                services.AddSingleton<IGetTenantInHttpContext, GetTenantByDefault>();
             }
             return services;
         }
