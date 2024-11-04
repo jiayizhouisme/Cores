@@ -1,5 +1,7 @@
 ﻿using Core.Auth;
+using Core.Config;
 using Core.HttpTenant;
+using Core.HttpTenant.HttpTenantContext;
 using Furion.LinqBuilder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -15,21 +17,37 @@ namespace Core.MiddelWares
     {
         private readonly IHttpContextUser httpContextUser;
         private readonly ITenantGetSetor tenantGetSetor;
-        public SaaSAuthorizationFilter(IHttpContextUser httpContextUser, ITenantGetSetor tenantGetSetor)
+        private readonly IGetTenantInHttpContext getTenantInHttpContext;
+        public SaaSAuthorizationFilter(IHttpContextUser httpContextUser, ITenantGetSetor tenantGetSetor, IGetTenantInHttpContext getTenantInHttpContext)
         {
             this.httpContextUser = httpContextUser;
             this.tenantGetSetor = tenantGetSetor;
+            this.getTenantInHttpContext = getTenantInHttpContext;
         }
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var tenant_id = tenantGetSetor.Get();
-            var realTenant = httpContextUser.TenantId;
-            if (tenant_id == null ||
-                realTenant.IsNullOrEmpty() ||
-                tenant_id != realTenant)
+            string realTenant;
+            if (Configration.tenantConfigType == TenantConfigTypes.ByHost)
             {
-                context.Result = new UnauthorizedResult();
+                var tenant = await getTenantInHttpContext.Get(tenantGetSetor.Get());
+                realTenant = httpContextUser.RealTenantId;
+                if (tenant.Name != realTenant)
+                {
+                    context.Result = new UnauthorizedResult();
+                }
             }
+            else
+            {
+                var tenant_id = tenantGetSetor.Get();
+                realTenant = httpContextUser.TenantId;
+                if (tenant_id == null ||
+                    realTenant.IsNullOrEmpty() ||
+                    tenant_id != realTenant)
+                {
+                    context.Result = new UnauthorizedResult();
+                }
+            }
+            
             await Task.CompletedTask;
         }
     }
