@@ -12,7 +12,7 @@ namespace Core.MiddelWares
     {
         protected readonly ICacheOperation _cache;
         protected string suffixed;
-        public const int _expireTime = 3000;
+        public const int _expireTime = 60;
         public readonly ITenantGetSetor tenantGetSetor;
         public CacheFilter(ICacheOperation _cache, ITenantGetSetor tenantGetSetor)
         {

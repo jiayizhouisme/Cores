@@ -58,7 +58,8 @@ namespace Core.MiddelWares
                         var red_path = await service.GetConfig(path1);
                         if (red_path != null)
                         {
-                            request.Path = new PathString(red_path.routePath);
+                            request.Path = new PathString(request.Path.Value.Replace(red_path.keyPath,red_path.routePath));
+                            //request.Path = new PathString(red_path.routePath);
                         }
                     }
                 }

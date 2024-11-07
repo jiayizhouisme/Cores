@@ -28,7 +28,23 @@ namespace Core.User.Service
         public async Task<WebRouteConfig> GetConfig(string keyPath)
         {
             var configs = await GetConfigs();
-            return configs.Where(a => a.keyPath == keyPath).FirstOrDefault();
+            if (keyPath == "/")
+            {
+                return configs.Where(a => a.keyPath == "/").FirstOrDefault();
+            }
+            foreach (var config in configs)
+            {
+                if (config.keyPath == "/")
+                {
+                    continue;
+                }
+                if (keyPath.StartsWith(config.keyPath))
+                {
+                    return config;
+                }
+            }
+            return null;
+            //return configs.Where(a => a.keyPath == keyPath).FirstOrDefault();
         }
 
         public async Task<ICollection<WebRouteConfig>> GetConfigs()
