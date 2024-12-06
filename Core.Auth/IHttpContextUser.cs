@@ -9,6 +9,7 @@ namespace Core.Auth
         string TenantId { get; }
         string Name { get; }
         string ID { get; }
+        string OpenId { get; }
         string RealTenantId { get; }
         string ExtraInfo { get; }
         string ClientIp { get; }

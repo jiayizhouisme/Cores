@@ -24,6 +24,7 @@ namespace Core.Auth
 
         public virtual string ID => GetUserInfoFromToken("jti").FirstOrDefault();
         public virtual string ExtraInfo => GetUserInfoFromToken("extra_info").FirstOrDefault();
+        public virtual string OpenId => GetUserInfoFromToken("openid").FirstOrDefault();
         public virtual string TenantId => GetTenantId();
         public virtual string RealTenantId => GetRealTenantId();
         public virtual string ClientIp => GetClientIp();
