@@ -17,7 +17,7 @@ using StackExchange.Profiling.Internal;
 
 namespace Core.EntityFrameWork
 {
-    public abstract class DefaultDbContext<T> : AppDbContext<T>, IMultiTenantOnDatabase where T : DbContext
+    public abstract class DefaultDbContext<T> : AppDbContext<T> where T : DbContext
     {
         protected string defaultConnectString;
         private readonly ITenantGetSetor tenantGetSetor;
