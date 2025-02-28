@@ -27,6 +27,7 @@ namespace Core.Auth
     {
         Administrator,
         Normal,
-        Unreconized
+        Unreconized,
+        LocalStaff
     }
 }
